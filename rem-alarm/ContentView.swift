@@ -9,26 +9,34 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var scheduler = AlarmScheduler()
+    @State private var settings = SleepSettings()
+    @State private var showingSettings = false
 
     var body: some View {
         ZStack {
-            Color.nightBackground.ignoresSafeArea()
+            Palette.background.ignoresSafeArea()
 
             if let armed = scheduler.armed {
                 ArmedView(armed: armed) { scheduler.cancel() }
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             } else {
-                CyclePickerView { option in
+                CyclePickerView(settings: settings) { option in
                     Task { await scheduler.arm(option) }
+                } onOpenSettings: {
+                    showingSettings = true
                 }
                 .transition(.opacity)
             }
         }
         .animation(.smooth(duration: 0.3), value: scheduler.armed)
         .preferredColorScheme(.dark)
+        .tint(Palette.accent)
         .task { await scheduler.observeAlarms() }
+        .sheet(isPresented: $showingSettings) {
+            SettingsView(settings: settings)
+        }
         .alert("Alarms are turned off", isPresented: $scheduler.authorizationDenied) {
-            Button("Open Settings") { openSettings() }
+            Button("Open Settings") { openSystemSettings() }
             Button("Not now", role: .cancel) {}
         } message: {
             Text("REM Alarm needs permission to schedule alarms so it can wake you through silent mode and Focus.")
@@ -47,7 +55,7 @@ struct ContentView: View {
         )
     }
 
-    private func openSettings() {
+    private func openSystemSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(url)
     }
@@ -55,9 +63,12 @@ struct ContentView: View {
 
 // MARK: - Picker
 
-/// The ten choices. Times are relative to now, so they re-render every minute.
+/// The cycle choices. Times are relative to now, so the list re-renders
+/// periodically to stay honest as the clock moves.
 private struct CyclePickerView: View {
+    let settings: SleepSettings
     let onSelect: (CycleOption) -> Void
+    let onOpenSettings: () -> Void
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 30)) { context in
@@ -65,7 +76,7 @@ private struct CyclePickerView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     header
                     VStack(spacing: 10) {
-                        ForEach(REMCycle.options(from: context.date)) { option in
+                        ForEach(options(at: context.date)) { option in
                             CycleRow(option: option) { onSelect(option) }
                         }
                     }
@@ -78,22 +89,52 @@ private struct CyclePickerView: View {
         }
     }
 
+    private func options(at date: Date) -> [CycleOption] {
+        REMCycle.options(from: date,
+                         count: settings.optionCount,
+                         cycleLength: settings.cycleLength,
+                         sleepLatency: settings.sleepLatency)
+    }
+
     private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Sleep now, wake at")
-                .font(.largeTitle.weight(.semibold))
-                .foregroundStyle(.white)
-            Text("Pick how many sleep cycles you want. Cycles are \(Int(REMCycle.length / 60)) minutes.")
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.55))
+        HStack(alignment: .firstTextBaseline) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Sleep now, wake at")
+                    .font(.largeTitle.weight(.semibold))
+                    .foregroundStyle(Palette.primaryText)
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundStyle(Palette.secondaryText)
+            }
+
+            Spacer(minLength: 12)
+
+            Button(action: onOpenSettings) {
+                Image(systemName: "slider.horizontal.3")
+                    .font(.title3)
+                    .foregroundStyle(Palette.accent)
+                    .frame(width: 44, height: 44)
+                    .background(Palette.card, in: .circle)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Settings")
+            .accessibilityIdentifier("openSettings")
         }
         .padding(.bottom, 4)
+    }
+
+    /// Spells out the falling-asleep buffer when there is one. Without this the
+    /// offset times just look wrong.
+    private var subtitle: String {
+        let base = "Cycles are \(settings.cycleMinutes) minutes."
+        guard settings.latencyMinutes > 0 else { return base }
+        return base + " Assuming \(settings.latencyMinutes) min to fall asleep."
     }
 
     private var footer: some View {
         Text("Waking at the end of a cycle beats waking in the middle of one.")
             .font(.footnote)
-            .foregroundStyle(.white.opacity(0.4))
+            .foregroundStyle(Palette.tertiaryText)
             .frame(maxWidth: .infinity, alignment: .center)
             .padding(.top, 8)
     }
@@ -111,24 +152,25 @@ private struct CycleRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(option.wakeTime.wakeTimeText)
                         .font(.title2.weight(.semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(Palette.primaryText)
                         .monospacedDigit()
                     Text("\(option.sleepDuration.sleepDurationText) of sleep")
                         .font(.caption)
-                        .foregroundStyle(.white.opacity(0.5))
+                        .foregroundStyle(Palette.secondaryText)
                 }
 
                 Spacer(minLength: 8)
 
                 Image(systemName: "chevron.right")
                     .font(.footnote.weight(.bold))
-                    .foregroundStyle(.white.opacity(0.3))
+                    .foregroundStyle(Palette.tertiaryText)
             }
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
-            .background(Color.nightCard, in: .rect(cornerRadius: 16))
+            .background(Palette.card, in: .rect(cornerRadius: 16))
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("cycleOption.\(option.cycles)")
     }
 }
 
@@ -144,9 +186,9 @@ private struct CycleBadge: View {
                 .font(.system(size: 9, weight: .medium))
                 .textCase(.uppercase)
         }
-        .foregroundStyle(Color.accentIndigo)
+        .foregroundStyle(Palette.accent)
         .frame(width: 52, height: 52)
-        .background(Color.accentIndigo.opacity(0.15), in: .circle)
+        .background(Palette.accent.opacity(0.14), in: .circle)
     }
 }
 
@@ -160,25 +202,25 @@ private struct ArmedView: View {
         VStack(spacing: 22) {
             Image(systemName: "moon.zzz.fill")
                 .font(.system(size: 34))
-                .foregroundStyle(Color.accentIndigo)
+                .foregroundStyle(Palette.accent)
 
             VStack(spacing: 6) {
                 Text("Alarm set for")
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.55))
+                    .foregroundStyle(Palette.secondaryText)
                 Text(armed.wakeTime.wakeTimeText)
                     .font(.system(size: 52, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Palette.primaryText)
                     .monospacedDigit()
-                Text("\(armed.cycles) \(armed.cycles == 1 ? "cycle" : "cycles") · \(Double(armed.cycles).sleepCycleDurationText) of sleep")
+                Text("\(armed.cycleLabel) · \(armed.sleepDuration.sleepDurationText) of sleep")
                     .font(.subheadline)
-                    .foregroundStyle(.white.opacity(0.55))
+                    .foregroundStyle(Palette.secondaryText)
             }
 
             Text(armed.wakeTime, style: .timer)
                 .font(.title3.weight(.medium))
                 .monospacedDigit()
-                .foregroundStyle(.white.opacity(0.35))
+                .foregroundStyle(Palette.tertiaryText)
 
             Button("Cancel alarm", role: .destructive, action: onCancel)
                 .buttonStyle(.bordered)
@@ -186,24 +228,9 @@ private struct ArmedView: View {
                 .padding(.top, 4)
         }
         .padding(32)
-        .background(Color.nightCard, in: .rect(cornerRadius: 24))
+        .background(Palette.card, in: .rect(cornerRadius: 24))
         .padding(24)
     }
-}
-
-private extension Double {
-    /// Convenience for the armed card: cycles -> "6h 40m".
-    var sleepCycleDurationText: String {
-        (self * REMCycle.length).sleepDurationText
-    }
-}
-
-// MARK: - Palette
-
-private extension Color {
-    static let nightBackground = Color(red: 0.04, green: 0.04, blue: 0.08)
-    static let nightCard = Color(red: 0.10, green: 0.10, blue: 0.16)
-    static let accentIndigo = Color(red: 0.55, green: 0.55, blue: 0.98)
 }
 
 #Preview {

@@ -6,7 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B06B69CD606C7E942631C853 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956EB04590D1950CAECF2568 /* Foundation.framework */; };
+		BF029B1F3B081BC6565D65F7 /* REMAlarmWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A27BCF38B740EB9BD2C61CDF /* REMAlarmWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
+		3531FE2FDE3F37B20CAB3DB8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 78E9C69B30536B6B002B0C53 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 25A2823BCF272305FFDE34C1;
+			remoteInfo = REMAlarmWidget;
+		};
 		78E9C6B130536B6C002B0C53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 78E9C69B30536B6B002B0C53 /* Project object */;
@@ -23,10 +35,26 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2C5EBAA1A0BC2CBDC228CEE7 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BF029B1F3B081BC6565D65F7 /* REMAlarmWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		78E9C6A330536B6B002B0C53 /* rem-alarm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "rem-alarm.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78E9C6B030536B6C002B0C53 /* rem-alarmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rem-alarmTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78E9C6BA30536B6C002B0C53 /* rem-alarmUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "rem-alarmUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		956EB04590D1950CAECF2568 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		A27BCF38B740EB9BD2C61CDF /* REMAlarmWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = REMAlarmWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,6 +64,13 @@
 				Info.plist,
 			);
 			target = 78E9C6A230536B6B002B0C53 /* rem-alarm */;
+		};
+		FF6FE6AA4D636ED42CC93E21 /* Exceptions for "REMAlarmWidget" folder in "REMAlarmWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 25A2823BCF272305FFDE34C1 /* REMAlarmWidget */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -56,6 +91,19 @@
 		78E9C6BD30536B6C002B0C53 /* rem-alarmUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "rem-alarmUITests";
+			sourceTree = "<group>";
+		};
+		7C246DC0B9B8B4FB742D8465 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		EEF09E5C4AC73F17B88A83F1 /* REMAlarmWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				FF6FE6AA4D636ED42CC93E21 /* Exceptions for "REMAlarmWidget" folder in "REMAlarmWidget" target */,
+			);
+			path = REMAlarmWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -82,6 +130,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		88818A2B2A64751B0AD0CAD3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B06B69CD606C7E942631C853 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -92,6 +148,9 @@
 				78E9C6B330536B6C002B0C53 /* rem-alarmTests */,
 				78E9C6BD30536B6C002B0C53 /* rem-alarmUITests */,
 				78E9C6A430536B6B002B0C53 /* Products */,
+				C23C1B4E9B64F00571356FBD /* Frameworks */,
+				EEF09E5C4AC73F17B88A83F1 /* REMAlarmWidget */,
+				7C246DC0B9B8B4FB742D8465 /* Shared */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,13 +160,51 @@
 				78E9C6A330536B6B002B0C53 /* rem-alarm.app */,
 				78E9C6B030536B6C002B0C53 /* rem-alarmTests.xctest */,
 				78E9C6BA30536B6C002B0C53 /* rem-alarmUITests.xctest */,
+				A27BCF38B740EB9BD2C61CDF /* REMAlarmWidget.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C23C1B4E9B64F00571356FBD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D277996531353B82003E1015 /* iOS */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D277996531353B82003E1015 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				956EB04590D1950CAECF2568 /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		25A2823BCF272305FFDE34C1 /* REMAlarmWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 407EFF98EE7DB4C760D874C1 /* Build configuration list for PBXNativeTarget "REMAlarmWidget" */;
+			buildPhases = (
+				582BEE2A94A2F3392F754522 /* Sources */,
+				88818A2B2A64751B0AD0CAD3 /* Frameworks */,
+				257CFED5EFF9F05189F29A7F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7C246DC0B9B8B4FB742D8465 /* Shared */,
+				EEF09E5C4AC73F17B88A83F1 /* REMAlarmWidget */,
+			);
+			name = REMAlarmWidget;
+			productName = REMAlarmWidget;
+			productReference = A27BCF38B740EB9BD2C61CDF /* REMAlarmWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		78E9C6A230536B6B002B0C53 /* rem-alarm */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 78E9C6C430536B6C002B0C53 /* Build configuration list for PBXNativeTarget "rem-alarm" */;
@@ -115,17 +212,18 @@
 				78E9C69F30536B6B002B0C53 /* Sources */,
 				78E9C6A030536B6B002B0C53 /* Frameworks */,
 				78E9C6A130536B6B002B0C53 /* Resources */,
+				2C5EBAA1A0BC2CBDC228CEE7 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				48840A20E20BDE7DB6176DE1 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				78E9C6A530536B6B002B0C53 /* rem-alarm */,
+				7C246DC0B9B8B4FB742D8465 /* Shared */,
 			);
 			name = "rem-alarm";
-			packageProductDependencies = (
-			);
 			productName = "rem-alarm";
 			productReference = 78E9C6A330536B6B002B0C53 /* rem-alarm.app */;
 			productType = "com.apple.product-type.application";
@@ -147,8 +245,6 @@
 				78E9C6B330536B6C002B0C53 /* rem-alarmTests */,
 			);
 			name = "rem-alarmTests";
-			packageProductDependencies = (
-			);
 			productName = "rem-alarmTests";
 			productReference = 78E9C6B030536B6C002B0C53 /* rem-alarmTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -170,8 +266,6 @@
 				78E9C6BD30536B6C002B0C53 /* rem-alarmUITests */,
 			);
 			name = "rem-alarmUITests";
-			packageProductDependencies = (
-			);
 			productName = "rem-alarmUITests";
 			productReference = 78E9C6BA30536B6C002B0C53 /* rem-alarmUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -216,11 +310,19 @@
 				78E9C6A230536B6B002B0C53 /* rem-alarm */,
 				78E9C6AF30536B6C002B0C53 /* rem-alarmTests */,
 				78E9C6B930536B6C002B0C53 /* rem-alarmUITests */,
+				25A2823BCF272305FFDE34C1 /* REMAlarmWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		257CFED5EFF9F05189F29A7F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		78E9C6A130536B6B002B0C53 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +347,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		582BEE2A94A2F3392F754522 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		78E9C69F30536B6B002B0C53 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +378,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		48840A20E20BDE7DB6176DE1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = REMAlarmWidget;
+			target = 25A2823BCF272305FFDE34C1 /* REMAlarmWidget */;
+			targetProxy = 3531FE2FDE3F37B20CAB3DB8 /* PBXContainerItemProxy */;
+		};
 		78E9C6B230536B6C002B0C53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 78E9C6A230536B6B002B0C53 /* rem-alarm */;
@@ -553,9 +668,63 @@
 			};
 			name = Release;
 		};
+		AA497912A83551B907C76D71 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = REMAlarmWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "REM Alarm";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chickengrass.rem-alarm.REMAlarmWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AEF5B543236DEDDF13D011E2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = REMAlarmWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "REM Alarm";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.chickengrass.rem-alarm.REMAlarmWidget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		407EFF98EE7DB4C760D874C1 /* Build configuration list for PBXNativeTarget "REMAlarmWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AEF5B543236DEDDF13D011E2 /* Release */,
+				AA497912A83551B907C76D71 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		78E9C69E30536B6B002B0C53 /* Build configuration list for PBXProject "rem-alarm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

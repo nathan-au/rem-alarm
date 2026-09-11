@@ -7,16 +7,20 @@ import AlarmKit
 import Foundation
 import SwiftUI
 
-/// Travels with the alarm so the system alert can say which cycle it belongs to.
-struct REMAlarmMetadata: AlarmMetadata {
-    let cycles: Int
-}
-
 /// The single alarm the user has armed for tonight.
+///
+/// Carries its own `sleepDuration` rather than recomputing it from the current
+/// settings: changing the cycle length after arming must not retroactively
+/// rewrite what an already-scheduled alarm claims to be.
 struct ArmedAlarm: Codable, Equatable {
     let id: UUID
     let cycles: Int
     let wakeTime: Date
+    let sleepDuration: TimeInterval
+
+    var cycleLabel: String {
+        "\(cycles) \(cycles == 1 ? "cycle" : "cycles")"
+    }
 }
 
 /// Wraps AlarmKit. Only one alarm is ever armed at a time — you only fall
@@ -43,21 +47,36 @@ final class AlarmScheduler {
         let id = UUID()
         // No stop button is supplied: since iOS 26.1 the system renders its own.
         let alert = AlarmPresentation.Alert(
-            title: "\(option.cycles) REM \(option.cycles == 1 ? "cycle" : "cycles")"
+            title: "\(option.cycleLabel) of sleep"
         )
+        // No pause button: pausing an alarm you are asleep behind is a footgun,
+        // and omitting the button is what keeps it off the Live Activity.
+        let countdown = AlarmPresentation.Countdown(title: "Sleeping")
         let attributes = AlarmAttributes<REMAlarmMetadata>(
-            presentation: AlarmPresentation(alert: alert),
+            presentation: AlarmPresentation(alert: alert, countdown: countdown),
             metadata: REMAlarmMetadata(cycles: option.cycles),
-            tintColor: .indigo
+            tintColor: Palette.accent
         )
-        let configuration = AlarmManager.AlarmConfiguration.alarm(
+        let configuration = AlarmManager.AlarmConfiguration(
+            countdownDuration: Alarm.CountdownDuration(
+                preAlert: option.wakeTime.timeIntervalSinceNow,
+                postAlert: nil
+            ),
             schedule: .fixed(option.wakeTime),
             attributes: attributes
         )
 
         do {
             _ = try await manager.schedule(id: id, configuration: configuration)
-            setArmed(ArmedAlarm(id: id, cycles: option.cycles, wakeTime: option.wakeTime))
+            // Required for the Live Activity. A freshly scheduled alarm sits in
+            // `.scheduled` state and AlarmKit creates no activity for it —
+            // verified in the logs: without this call you get no activity at all
+            // and cancelling reports `unknownAlarm`. Moving it to `.countdown`
+            // is what makes AlarmKit create the Lock Screen activity.
+            try manager.countdown(id: id)
+            setArmed(ArmedAlarm(id: id, cycles: option.cycles,
+                                wakeTime: option.wakeTime,
+                                sleepDuration: option.sleepDuration))
         } catch {
             errorMessage = "Couldn't set the alarm: \(error.localizedDescription)"
         }

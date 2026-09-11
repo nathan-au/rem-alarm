@@ -27,7 +27,7 @@ final class ArmAlarmUITests: XCTestCase {
             return false
         }
 
-        let firstRow = app.buttons.element(boundBy: 0)
+        let firstRow = app.buttons["cycleOption.1"]
         XCTAssertTrue(firstRow.waitForExistence(timeout: 5), "cycle list should render")
         firstRow.tap()
 
@@ -53,5 +53,53 @@ final class ArmAlarmUITests: XCTestCase {
         cancel.tap()
         XCTAssertTrue(app.staticTexts["Sleep now, wake at"].waitForExistence(timeout: 5),
                       "cancelling should return to the picker")
+    }
+
+    /// Changing the number of options has to change the length of the list.
+    ///
+    /// Settings persist across launches, so this normalises them through the
+    /// reset button at both ends rather than assuming a starting value.
+    @MainActor
+    func testOptionCountControlsListLength() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        resetSettings(in: app)
+
+        XCTAssertTrue(app.buttons["cycleOption.10"].waitForExistence(timeout: 5),
+                      "ten options after a reset")
+        XCTAssertFalse(app.buttons["cycleOption.11"].exists)
+
+        app.buttons["openSettings"].tap()
+        let optionsStepper = app.steppers["optionCountStepper"]
+        XCTAssertTrue(optionsStepper.waitForExistence(timeout: 5),
+                      "settings should show the options stepper")
+        let shot = XCTAttachment(screenshot: app.screenshot())
+        shot.name = "settings"
+        shot.lifetime = .keepAlways
+        add(shot)
+
+        optionsStepper.buttons.element(boundBy: 0).tap()   // decrement
+        app.buttons["Done"].tap()
+
+        XCTAssertTrue(app.buttons["cycleOption.9"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["cycleOption.10"].exists,
+                       "the tenth option should be gone")
+
+        resetSettings(in: app)
+    }
+
+    private func resetSettings(in app: XCUIApplication) {
+        app.buttons["openSettings"].tap()
+
+        // The Form renders lazily, so the reset button may not exist until it
+        // has been scrolled into view.
+        let reset = app.buttons["resetSettings"]
+        if !reset.waitForExistence(timeout: 3) {
+            app.swipeUp()
+        }
+        XCTAssertTrue(reset.waitForExistence(timeout: 5), "settings should offer a reset")
+        reset.tap()
+        app.buttons["Done"].tap()
     }
 }
